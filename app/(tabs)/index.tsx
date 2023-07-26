@@ -1,14 +1,54 @@
-import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import { useCallback } from "react";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import DraggableFlatList, {
+    ScaleDecorator,
+    ShadowDecorator,
+    OpacityDecorator,
+    RenderItemParams,
+} from 'react-native-draggable-flatlist'
+import { sortBy } from "lodash";
+import { Text, View } from "@/components/Themed";
+import { useStore } from "@/stores";
 
 export default function TabOneScreen() {
+  const topTen = useStore((state) => state.topTen);
+  const updateOrder = useStore((state) => state.updateOrder);
+
+  const renderItem = useCallback(
+    ({ item, drag, isActive }: RenderItemParams<any>) => {
+      return (
+        <ShadowDecorator>
+          <ScaleDecorator>
+            <OpacityDecorator>
+              <TouchableOpacity
+                activeOpacity={1}
+                onLongPress={drag}
+                disabled={isActive}
+                style={[
+                  { height: 100, alignItems: 'center', justifyContent: 'center'},
+                  { backgroundColor: isActive ? "blue" : item.backgroundColor },
+                ]}
+              >
+                <Text>{item.title}</Text>
+              </TouchableOpacity>
+            </OpacityDecorator>
+          </ScaleDecorator>
+        </ShadowDecorator>
+      );
+    },
+    []
+  );
+
+  const myData = sortBy(topTen, t => t.rank);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      <DraggableFlatList
+        data={myData}
+        onDragEnd={({ data }) => updateOrder(data)}
+        keyExtractor={(item, index) => `draggable-item-${item.id}`}
+        renderItem={renderItem}
+      />
     </View>
   );
 }
@@ -16,16 +56,14 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: '80%',
+    width: "80%",
   },
 });
