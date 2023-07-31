@@ -1,11 +1,11 @@
 import { ListItem } from "@rneui/themed";
 
-export const TopTenItem = function TopTenItem({ item, onPressEdit }) {
+export const TopTenItemDetail = function TopTenItemDetail({ item }) {
   return <ListItem
-      onPress={onPressEdit}
     >
       <ListItem.Content>
         <ListItem.Title>{item.title ? item.title : '-'}</ListItem.Title>
+        <ListItem.Subtitle>Description here</ListItem.Subtitle>
       </ListItem.Content>
     </ListItem>
 };
