@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import { ListItem, Button, Input, useTheme } from "@rneui/themed";
 import { FireSetter } from "./FireSetter";
+import { DateEditor } from "./DateEditor";
 
 export const TopTenItemDetail = function TopTenItemDetail({
   item,
@@ -45,6 +46,7 @@ function ViewTopTenItem({ item, onPressEdit, onPressComplete, onPressCancel }) {
         <ListItem.Title>{item.title ? item.title : "-"}</ListItem.Title>
         <ListItem.Subtitle>{item.notes ? item.notes : "-"}</ListItem.Subtitle>
         <FireSetter numFires={item.fireCount} />
+        <DateEditor date={item.dueDate} />
         <ListItem.Content>
           <ButtonRow>
             <Button onPress={onPressEdit}>Edit</Button>
@@ -73,7 +75,7 @@ function EmptyTopTenItem({ onPressAdd }) {
 function EditingTopTenItem({ item, onPressSave, onPressCancel }) {
   const [editingItem, setEditingItem] = useState(item);
   function updateEditingItem(newValues) {
-    console.log("updateEditingItem", newValues)
+    console.log("updateEditingItem", newValues);
     setEditingItem({ ...editingItem, ...newValues });
   }
 
@@ -94,6 +96,11 @@ function EditingTopTenItem({ item, onPressSave, onPressCancel }) {
           numFires={editingItem.fireCount}
           onUpdateNumFires={(fireCount) => updateEditingItem({ fireCount })}
           isEditable={true}
+        />
+        <DateEditor
+          date={item.dueDate}
+          isEditable
+          onUpdateDate={(dueDate) => updateEditingItem({ dueDate })}
         />
         <ButtonRow>
           <Button onPress={() => onPressSave(editingItem)}>Save</Button>
