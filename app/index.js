@@ -3,6 +3,7 @@ import { StyleSheet, View, FlatList, Pressable } from "react-native";
 import { Stack, router, Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { sortBy } from "lodash";
+import { useTheme } from "@rneui/themed";
 import DraggableFlatList, {
   ScaleDecorator,
   ShadowDecorator,
@@ -15,6 +16,7 @@ import { TopTenItem } from "../components/TopTenItem";
 export default function IndexScreen() {
   const topTen = useStore((state) => state.topTen);
   const updateOrder = useStore((state) => state.updateOrder);
+  const { theme } = useTheme();
 
   const renderItem = useCallback(({ item, drag, isActive }) => {
     return (
@@ -58,7 +60,11 @@ export default function IndexScreen() {
       <DraggableFlatList
         data={myData}
         onDragEnd={({ data }) => updateOrder(data)}
-        keyExtractor={(item, index) => `draggable-item-${item.id}`}
+        keyExtractor={(item, index) =>
+          `draggable-item-${item.id}-${
+            item.rank < 4 ? "top-three" : "not-top-three" /* forces rerender */
+          }`
+        }
         renderItem={renderItem}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
       />

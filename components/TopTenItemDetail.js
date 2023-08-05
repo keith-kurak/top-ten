@@ -12,10 +12,6 @@ export const TopTenItemDetail = function TopTenItemDetail({
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
-  if (!isEditing && !item.title) {
-    return <EmptyTopTenItem onPressAdd={() => setIsEditing(true)} />;
-  }
-
   if (isEditing) {
     return (
       <EditingTopTenItem
@@ -45,28 +41,19 @@ function ViewTopTenItem({ item, onPressEdit, onPressComplete, onPressCancel }) {
       <ListItem.Content>
         <ListItem.Title>{item.title ? item.title : "-"}</ListItem.Title>
         <ListItem.Subtitle>{item.notes ? item.notes : "-"}</ListItem.Subtitle>
-        <FireSetter numFires={item.fireCount} />
-        <DateEditor date={item.dueDate} />
+        {item.title && (
+          <>
+            <FireSetter numFires={item.fireCount} />
+            <DateEditor date={item.dueDate} />
+          </>
+        )}
         <ListItem.Content>
           <ButtonRow>
-            <Button onPress={onPressEdit}>Edit</Button>
-            <Button onPress={onPressComplete}>Complete</Button>
-            <Button onPress={onPressCancel}>Cancel</Button>
+            <Button onPress={onPressEdit}>{item.title ? "Edit" : "Add"}</Button>
+            {item.title && <Button onPress={onPressComplete}>Complete</Button>}
+            {item.title && <Button onPress={onPressCancel}>Cancel</Button>}
           </ButtonRow>
         </ListItem.Content>
-      </ListItem.Content>
-    </ListItem>
-  );
-}
-
-function EmptyTopTenItem({ onPressAdd }) {
-  return (
-    <ListItem>
-      <ListItem.Content>
-        <ListItem.Title>Nothing here yet!</ListItem.Title>
-        <ButtonRow>
-          <Button onPress={onPressAdd}>Add something</Button>
-        </ButtonRow>
       </ListItem.Content>
     </ListItem>
   );
@@ -75,7 +62,6 @@ function EmptyTopTenItem({ onPressAdd }) {
 function EditingTopTenItem({ item, onPressSave, onPressCancel }) {
   const [editingItem, setEditingItem] = useState(item);
   function updateEditingItem(newValues) {
-    console.log("updateEditingItem", newValues);
     setEditingItem({ ...editingItem, ...newValues });
   }
 

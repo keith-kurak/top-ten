@@ -12,18 +12,20 @@ export const TopTenItem = function TopTenItem({
 
   return (
     <ListItem
-      containerStyle={isDragging && { backgroundColor: theme.colors.grey5 }}
+      containerStyle={[
+        isDragging && { backgroundColor: theme.colors.grey5 },
+        {
+          backgroundColor:
+            item.rank <= 3 ? theme.colors.grey5 : theme.colors.white,
+        },
+      ]}
       onPress={onPressEdit}
       disabled={isDragging}
       onLongPress={onStartDrag}
     >
       <ListItem.Content>
         <ListItem.Title>{item.title ? item.title : "-"}</ListItem.Title>
-        <FireSetter
-          numFires={item.fireCount}
-          fireSize={12.5}
-          showOnlyLitFires
-        />
+        <FireSetter numFires={item.fireCount} fireSize={10} showOnlyLitFires />
       </ListItem.Content>
       <Ionicons
         color={theme.colors.grey0}
